@@ -1,0 +1,139 @@
+body {
+    background-color: lightgray;
+    font-family: sans-serif;
+}
+*,::before,::after {
+    box-sizing: border-box;
+}
+hr {
+    border: 2px solid lightgray;
+}
+.nav ul {
+   
+}
+.nav ul li {
+    
+    display: inline-block;
+    padding: 20px 20px 0 0;
+}
+.nav ul li a {
+    text-decoration: none;
+    color: gray;
+    font-size: 14px;
+    margin-bottom: 10px;
+    
+}
+.active {
+    border-bottom: 2px solid blue;
+    transform: scale(0.5);
+}
+.nav ul li a:hover {
+    
+    
+}
+/* .nav ul li a::after {
+    content: '';
+    display: block;
+    width: 100%;
+    background-color: rgb(93, 138, 235);
+    height: 2px;
+    transform: scale(0);
+    transition: all .3s;
+}
+.nav ul li a:hover::after {
+    transform: scale(0.5);
+} */
+/* .nav ul li::after{
+    width: 100%;
+    height:5px;
+    display: block;
+    background-color: blue;
+    transform: scale(0);
+    transition: all .3s;
+}
+.nav ul li:hover::after {
+        transform: scale(1);
+} */
+.main_container{
+    background-color: #fff;
+    width: 540px;
+    height: 590px;
+    border-radius: 10px;
+}
+#search {
+    border: 0;
+    background-color: #96a1a214;
+    border-radius: 30px;
+    height: 35px;
+    margin-left: 10px;
+    outline: 0;
+    padding-left: 20px;
+}
+.followLink {
+    text-decoration: none;
+    color: white;
+}
+.userCard {
+    display: flex;
+    padding: 10px;
+}
+.userPicture {
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+.image  {
+    border-radius: 50%;
+    border: 0;
+    outline: 0;
+    width: 55px;
+}
+.userContent {
+    margin: 0 0 0 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;   
+}
+.userName {
+    font-size: 16px;
+}
+.userInfo {
+    margin-top: 5px;
+    color: rgb(187, 182, 182);
+    font-size: 14px;
+}
+.follow {
+    
+    margin:7px 0 0 130px;
+    background-color: rgb(53, 160, 209);
+    color: white;
+    width: 80px;
+    height: 40px;
+    border-radius: 30px;
+    border: 0;
+    outline: 0;
+}
+.followButton {
+    width: 80px;
+    height: 40px;
+    border-radius: 30px;
+    outline: 0;
+    background-color: rgb(53, 160, 209);
+    color: white;
+    margin-left: auto;
+    margin-top: 10px;
+} 
+.user_container {
+    width: 100%;
+    padding: 20px; 
+}
+.unfollowButton {
+    color: rgb(53, 160, 209);
+    background-color: white;
+    width: 80px;
+    height: 40px;
+    border-radius: 30px;
+    outline: 0;
+    margin-left: auto;
+    margin-top: 10px;
+}

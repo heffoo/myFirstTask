@@ -12,6 +12,7 @@ for (let i = 0; i < 6; i++) {
     isFollow: false,
   })
 }
+let isActive = false;
 // let form = doument.createElement('div');
 // form.className = "form";
 // document.body.prepend(form);
@@ -37,13 +38,13 @@ const getUserName = (name) => {
 const getUserInfo = (type, followersAmount, postsAmount) => {
   const userInfo = document.createElement('div');
   userInfo.className = 'userInfo';
-  userInfo.textContent = type + '  ' + followersAmount + '    ' + "Followers" + '   ' + postsAmount + '      ' + 'Posts';
+  userInfo.textContent = type + '  ' + '  •  ' + followersAmount + '    ' + "Followers" + '   ' + '  •  ' + postsAmount + '      ' + 'Posts';
   return userInfo;
 }
-const createUserCard = (communities, i) => {
+const createUserCard = (communities, i, arr) => {
   const userCard = document.createElement('div');
   userCard.className = 'userCard';
-  userCard.append(getUserPicture(communities.image), getUserContent(communities.name, communities.type, communities.followersAmount, communities.postsAmount), createButton(i));
+  userCard.append(getUserPicture(communities.image), getUserContent(communities.name, communities.type, communities.followersAmount, communities.postsAmount), createButton(i, arr));
   return userCard;
 }
 const getUserContent = (name, type, followersAmount, postsAmount) => {
@@ -52,31 +53,143 @@ const getUserContent = (name, type, followersAmount, postsAmount) => {
   userContent.append(getUserName(name), getUserInfo(type, followersAmount, postsAmount));
   return userContent
 }
-const createButton = (i) => {
-  const followButton = document.createElement('button');
-  followButton.className = 'followButton';
-  followButton.addEventListener('click', (e) => {
-    if (e.target.innerHTML === 'Follow') {
-      e.target.innerHTML = 'Unfollow'
-      followButton.classList.remove('followButton')
-      followButton.classList.add('unfollowButton')
-      communities[i].isFollow = true;
-      console.log(communities[i].isFollow)
+const createButton = (i, arr) => {
+  if (!isActive) {
+    return createFollowBtn(i, arr)
 
+}
+else {
+  return createDropBtn(i, arr)
+}
+}
+
+const createFollowBtn = (i, arr) => {
+const followButton = document.createElement('button');
+followButton.className = 'followButton';
+followButton.addEventListener('click', (e) => {
+if (e.target.innerHTML === 'Follow') {
+  e.target.innerHTML = 'Unfollow'
+  followButton.classList.remove('followButton')
+  followButton.classList.add('unfollowButton')
+  arr[i].isFollow = true;
+  // console.log(arr[i].isFollow)
+
+}
+else {
+  e.target.innerHTML = 'Follow'
+  followButton.className = 'followButton'
+  arr[i].isFollow = false;
+}
+console.log('communities', communities)
+
+}
+
+)
+if (arr[i].isFollow) {
+followButton.innerHTML = 'Unfollow'
+followButton.className = "unfollowButton"
+}
+else {
+followButton.innerHTML = "Follow"
+}
+// console.log(followButton)
+return followButton
+}
+// 
+
+const createDropBtn = (i, arr) => {
+  const dropbtn = document.createElement('button');
+    dropbtn.className ='dropbtn';
+    dropbtn.innerHTML = '•••';
+    dropbtn.addEventListener('click', () => {
+      if(dropbtn.childNodes.length === 1) {
+      const dropContent = document.createElement('button');
+      dropContent.innerHTML = 'Unfollow';
+      dropContent.className = 'dropContent';
+      dropbtn.append(dropContent)
+      dropContent.addEventListener('click', (e) => {
+
+  arr[i].isFollow = false;
+        
+      })
     }
     else {
-      e.target.innerHTML = 'Follow'
-      followButton.className = 'followButton'
-      communities[i].isFollow = false;
-      console.log(communities[i].isFollow)
+      dropbtn.innerHTML = '•••';
     }
-  }
-  )
-  followButton.innerHTML = 'Follow';
-  console.log(followButton)
-  return followButton
+    })
+  return dropbtn;
+}
+// const createDropContent = (i, arr) => {
+// dropContent.addEventListener('click', (e) => {
+//   console.log(e);
+  
+// })
+// return dropbtn
+// }
+// const dropul = document.createElement('ul');
+//   const dropli = document.createElement('li');
+//   dropbtn.addEventListener('click', (dropbtn) => {
+  
+//   dropli.innerHTML = 'Unfollow';
+//   dropul.append(dropli);
+// })
+//
+
+
+for (let i = 0; i < communities.length; i++) {
+  userContainer.append(createUserCard(communities[i], i, communities));
 }
 
-for (let i = 0; i <= communities.length; i++) {
-  userContainer.append(createUserCard(communities[i], i));
+const comms = document.querySelector('.myComms');
+comms.addEventListener('click', () => {
+  discover.classList.remove('active')
+  comms.classList.add('active')
+  isActive = true;
+  console.log(isActive)
+  const followList = communities.filter(function (item) {
+    return item.isFollow;
+  })
+  userContainer.innerHTML = '';
+  for (let i = 0; i < followList.length; i++) {
+    userContainer.append(createUserCard(followList[i], i, followList))
+  }
+})
+const discover = document.querySelector('.discover');
+discover.classList.add('active')
+discover.addEventListener('click', () => {
+  comms.classList.remove('active');
+  discover.classList.add('active');
+  isActive = false;
+  console.log(isActive)
+  userContainer.innerHTML = '';
+  for (let i = 0; i < communities.length; i++) {
+    userContainer.append(createUserCard(communities[i], i, communities));
+  }
 }
+)
+
+const searchFilter = document.querySelector('#search');
+searchFilter.addEventListener('input', (event) => {
+  if (!isActive) {
+  const filtered = communities.filter(function (user) {
+    return user.name.includes(event.target.value)
+  })
+  userContainer.innerHTML = '';
+  for (let i = 0; i < filtered.length; i++) {
+    userContainer.append(createUserCard(filtered[i], i, filtered))
+  }
+}
+else {
+  const followList = communities.filter(function (item) {
+    return item.isFollow;
+  })
+    const filtered =  followList.filter(function(user) {
+
+      return user.name.includes(event.target.value)
+    })
+    userContainer.innerHTML = '';
+    for(let i = 0; i < filtered.length; i++) {
+      userContainer.append(createUserCard(filtered[i], i, filtered))
+  }
+}
+})

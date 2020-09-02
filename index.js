@@ -13,11 +13,9 @@ for (let i = 0; i < 6; i++) {
   })
 }
 let isActive = false;
-// let form = doument.createElement('div');
-// form.className = "form";
-// document.body.prepend(form);
-// let userCard = document.createElement('div');
-// userCard.className = "userCard";
+
+
+const searchFilter = document.querySelector('#search');
 
 const userContainer = document.querySelector('.user_container');
 const getUserPicture = (image) => {
@@ -57,84 +55,83 @@ const createButton = (i, arr) => {
   if (!isActive) {
     return createFollowBtn(i, arr)
 
+  }
+  else {
+    return createDropBtn(i, arr)
+  }
 }
-else {
-  return createDropBtn(i, arr)
-}
-}
-
 const createFollowBtn = (i, arr) => {
-const followButton = document.createElement('button');
-followButton.className = 'followButton';
-followButton.addEventListener('click', (e) => {
-if (e.target.innerHTML === 'Follow') {
-  e.target.innerHTML = 'Unfollow'
-  followButton.classList.remove('followButton')
-  followButton.classList.add('unfollowButton')
-  arr[i].isFollow = true;
-  // console.log(arr[i].isFollow)
+  const followButton = document.createElement('button');
+  followButton.className = 'followButton';
+  followButton.addEventListener('click', (e) => {
+    if (e.target.innerHTML === 'Follow') {
+      e.target.innerHTML = 'Unfollow'
+      followButton.classList.remove('followButton')
+      followButton.classList.add('unfollowButton')
+      arr[i].isFollow = true;
+      // console.log(arr[i].isFollow)
 
-}
-else {
-  e.target.innerHTML = 'Follow'
-  followButton.className = 'followButton'
-  arr[i].isFollow = false;
-}
-console.log('communities', communities)
+    }
+    else {
+      e.target.innerHTML = 'Follow'
+      followButton.className = 'followButton'
+      arr[i].isFollow = false;
+    }
+    console.log('communities', communities)
 
-}
+  }
 
-)
-if (arr[i].isFollow) {
-followButton.innerHTML = 'Unfollow'
-followButton.className = "unfollowButton"
-}
-else {
-followButton.innerHTML = "Follow"
-}
-// console.log(followButton)
-return followButton
+  )
+  if (arr[i].isFollow) {
+    followButton.innerHTML = 'Unfollow'
+    followButton.className = "unfollowButton"
+  }
+  else {
+    followButton.innerHTML = "Follow"
+  }
+  // console.log(followButton)
+  return followButton
 }
 // 
 
 const createDropBtn = (i, arr) => {
   const dropbtn = document.createElement('button');
-    dropbtn.className ='dropbtn';
-    dropbtn.innerHTML = '•••';
-    dropbtn.addEventListener('click', () => {
-      if(dropbtn.childNodes.length === 1) {
-      const dropContent = document.createElement('button');
-      dropContent.innerHTML = 'Unfollow';
-      dropContent.className = 'dropContent';
-      dropbtn.append(dropContent)
-      dropContent.addEventListener('click', (e) => {
+  dropbtn.className = 'dropbtn';
+  dropbtn.innerHTML = '• • •';
+  dropbtn.addEventListener('click', (e) => {
+    console.log(e.target.parentElement, 123);
 
-  arr[i].isFollow = false;
-        
-      })
+    if (e.target.classList.contains("dropbtn")) {
+
+      if (dropbtn.childNodes.length === 1) {
+        const dropContent = document.createElement('button');
+        dropContent.innerHTML = 'Unfollow';
+
+        dropContent.className = 'dropContent';
+        dropContent.onblur = () => {
+          dropbtn.innerHTML = '• • •';
+        }
+        dropbtn.append(dropContent)
+        dropContent.focus();
+      }
+
+      else {
+        dropbtn.textContent = '• • •';
+      }
     }
-    else {
-      dropbtn.innerHTML = '•••';
+
+    if (e.target.classList.contains("dropContent")) {
+      arr[i].isFollow = false;
+      e.target.parentElement.parentElement.classList.toggle('userCard');
+      e.target.parentElement.parentElement.innerHTML = '';
+
+
     }
-    })
+  })
+
+
   return dropbtn;
 }
-// const createDropContent = (i, arr) => {
-// dropContent.addEventListener('click', (e) => {
-//   console.log(e);
-  
-// })
-// return dropbtn
-// }
-// const dropul = document.createElement('ul');
-//   const dropli = document.createElement('li');
-//   dropbtn.addEventListener('click', (dropbtn) => {
-  
-//   dropli.innerHTML = 'Unfollow';
-//   dropul.append(dropli);
-// })
-//
-
 
 for (let i = 0; i < communities.length; i++) {
   userContainer.append(createUserCard(communities[i], i, communities));
@@ -142,21 +139,23 @@ for (let i = 0; i < communities.length; i++) {
 
 const comms = document.querySelector('.myComms');
 comms.addEventListener('click', () => {
+  
   discover.classList.remove('active')
   comms.classList.add('active')
   isActive = true;
   console.log(isActive)
-  const followList = communities.filter(function (item) {
-    return item.isFollow;
-  })
+  const followList = communities.filter((item) => item.isFollow);
   userContainer.innerHTML = '';
   for (let i = 0; i < followList.length; i++) {
     userContainer.append(createUserCard(followList[i], i, followList))
   }
 })
+
 const discover = document.querySelector('.discover');
 discover.classList.add('active')
 discover.addEventListener('click', () => {
+  searchFilter.innerHTML = '';
+  
   comms.classList.remove('active');
   discover.classList.add('active');
   isActive = false;
@@ -165,31 +164,30 @@ discover.addEventListener('click', () => {
   for (let i = 0; i < communities.length; i++) {
     userContainer.append(createUserCard(communities[i], i, communities));
   }
-}
-)
+  console.log(searchFilter.value);
+})
 
-const searchFilter = document.querySelector('#search');
+
 searchFilter.addEventListener('input', (event) => {
   if (!isActive) {
-  const filtered = communities.filter(function (user) {
-    return user.name.includes(event.target.value)
-  })
-  userContainer.innerHTML = '';
-  for (let i = 0; i < filtered.length; i++) {
-    userContainer.append(createUserCard(filtered[i], i, filtered))
-  }
-}
-else {
-  const followList = communities.filter(function (item) {
-    return item.isFollow;
-  })
-    const filtered =  followList.filter(function(user) {
-
-      return user.name.includes(event.target.value)
+    const filtered = communities.filter(function (user) {
+      return user.name.toLowerCase().includes(event.target.value.toLowerCase())
     })
     userContainer.innerHTML = '';
-    for(let i = 0; i < filtered.length; i++) {
+    for (let i = 0; i < filtered.length; i++) {
       userContainer.append(createUserCard(filtered[i], i, filtered))
+    }
   }
-}
+  else {
+    const followList = communities.filter(item => item.isFollow);
+    const filtered = followList.filter(user => {
+      return user.name.toLowerCase().includes(event.target.value.toLowerCase())
+    })
+    userContainer.innerHTML = '';
+    for (let i = 0; i < filtered.length; i++) {
+      userContainer.append(createUserCard(filtered[i], i, filtered))
+    }
+  }
+  console.log(searchFilter.value);
+
 })

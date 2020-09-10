@@ -1,17 +1,26 @@
-import faker from 'faker'
+// import faker from 'faker'
+let communities = [];
+let url = 'http://10.1.1.20:3001/api/collections/community/list';
 
-let communities = []
-for (let i = 0; i < 6; i++) {
-  communities.push({
-    id: faker.random.uuid(),
-    image: faker.image.avatar(),
-    name: `${faker.name.firstName()} ${faker.name.lastName()}`,
-    type: 'Game',
-    followersAmount: faker.random.number(),
-    postsAmount: faker.random.number(),
-    isFollow: false,
-  })
+async function ftch() {
+  
+  // let response = await fetch(url);
+
+
+  let response = await fetch(url)
+    .then(resp => resp)
+
+    console.log(response.headers.get("userid"));
+  
+  let com = await response.json();
+  communities = com.data;
+
+  for (let i = 0; i < communities.length; i++) {
+    userContainer.append(createUserCard(communities[i], i, communities));
+  }
 }
+ftch();
+
 let isActive = false;
 
 
@@ -42,6 +51,7 @@ const getUserInfo = (type, followersAmount, postsAmount) => {
 const createUserCard = (communities, i, arr) => {
   const userCard = document.createElement('div');
   userCard.className = 'userCard';
+  console.log(communities)
   userCard.append(getUserPicture(communities.image), getUserContent(communities.name, communities.type, communities.followersAmount, communities.postsAmount), createButton(i, arr));
   return userCard;
 }
@@ -63,8 +73,31 @@ const createButton = (i, arr) => {
 const createFollowBtn = (i, arr) => {
   const followButton = document.createElement('button');
   followButton.className = 'followButton';
-  followButton.addEventListener('click', (e) => {
+  followButton.addEventListener('click', async (e) => {
+    
     if (e.target.innerHTML === 'Follow') {
+      
+      const response = await fetch('http://10.1.1.20:3000/api/users/userapi/subscribe', 
+      {
+        method: 'POST',
+        headers: {
+          userid: localStorage.getItem('userId') !== null ? localStorage.getItem('userId') : ''
+        },
+        body: {
+          communityId:  arr[i].id
+        },
+      })
+        
+     let com = await response.json();
+    //   if (com.success !== true) {
+    //     localStorage.setItem('userId');
+
+    //  }
+
+console.log(response.headers.get('userid'))
+
+
+
       e.target.innerHTML = 'Unfollow'
       followButton.classList.remove('followButton')
       followButton.classList.add('unfollowButton')
@@ -100,7 +133,7 @@ const createDropBtn = (i, arr) => {
   dropbtn.innerHTML = '• • •';
   dropbtn.addEventListener('click', (e) => {
     console.log(e.target.parentElement, 123);
-
+    
     if (e.target.classList.contains("dropbtn")) {
 
       if (dropbtn.childNodes.length === 1) {
@@ -133,13 +166,11 @@ const createDropBtn = (i, arr) => {
   return dropbtn;
 }
 
-for (let i = 0; i < communities.length; i++) {
-  userContainer.append(createUserCard(communities[i], i, communities));
-}
+
 
 const comms = document.querySelector('.myComms');
 comms.addEventListener('click', () => {
-  
+
   discover.classList.remove('active')
   comms.classList.add('active')
   isActive = true;
@@ -155,7 +186,7 @@ const discover = document.querySelector('.discover');
 discover.classList.add('active')
 discover.addEventListener('click', () => {
   searchFilter.innerHTML = '';
-  
+
   comms.classList.remove('active');
   discover.classList.add('active');
   isActive = false;
